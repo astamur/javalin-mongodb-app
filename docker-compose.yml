@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:4.2.3
+    ports:
+      - 27017:27017
+    restart: always
+
+  app:
+    image: astamur/app:0.0.1
+    ports:
+      - 8080:80
+    environment:
+      APP_PORT: 80
+      MONGO_HOST: mongodb
+      DB_NAME: app
+    depends_on:
+      - mongodb
+    restart: always

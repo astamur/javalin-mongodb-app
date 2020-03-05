@@ -1,0 +1,58 @@
+buildscript {
+    apply from: 'versions.gradle'
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.bmuschko.docker-remote-api' version '5.3.0'
+}
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+group 'dev.astamur'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'dev.astamur.javalin.App'
+
+dependencies {
+    // Core
+    implementation "io.javalin:javalin:$versions.javalin"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$versions.jackson"
+    implementation "org.mongodb:mongo-java-driver:$versions.mongodb"
+
+    compileOnly "org.projectlombok:lombok:$versions.lombok"
+    annotationProcessor "org.projectlombok:lombok:$versions.lombok"
+
+    // Logging
+    implementation "org.slf4j:slf4j-api:$versions.slf4j"
+    implementation "ch.qos.logback:logback-classic:$versions.logback"
+
+    // Tests
+    testImplementation "io.rest-assured:rest-assured:$versions.restAssured"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+    inputDir.set(file('./'))
+    tags.add("astamur/app:$version")
+}
