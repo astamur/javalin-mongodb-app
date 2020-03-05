@@ -33,7 +33,6 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:$versions.logback"
 
     // Tests
-    testImplementation "io.rest-assured:rest-assured:$versions.restAssured"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
 }
