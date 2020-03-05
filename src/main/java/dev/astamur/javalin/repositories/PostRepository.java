@@ -11,7 +11,7 @@ public interface PostRepository {
 
     List<Post> findAll();
 
-    Post update(Post post);
+    Post update(Post post, String id);
 
     void delete(String id);
 }

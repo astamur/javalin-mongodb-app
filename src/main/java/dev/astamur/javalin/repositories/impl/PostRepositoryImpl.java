@@ -1,14 +1,11 @@
 package dev.astamur.javalin.repositories.impl;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
-import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.client.model.ReturnDocument;
 import dev.astamur.javalin.model.Post;
 import dev.astamur.javalin.repositories.PostRepository;
-import io.javalin.http.BadRequestResponse;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -51,12 +48,12 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post update(Post post) {
-        return posts.findOneAndReplace(new Document("_id", post.getId()), post, UPDATE_OPTIONS);
+    public Post update(Post post, String id) {
+        return posts.findOneAndReplace(new Document("_id", new ObjectId(id)), post, UPDATE_OPTIONS);
     }
 
     @Override
     public void delete(String id) {
-        posts.deleteOne(new Document("_id", id));
+        posts.deleteOne(new Document("_id", new ObjectId(id)));
     }
 }

@@ -6,6 +6,7 @@ import dev.astamur.javalin.model.Post;
 import dev.astamur.javalin.repositories.PostRepository;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,14 @@ public class PostControllerImpl implements PostController {
 
     @Override
     public void find(@NotNull Context context) {
-        context.json(postRepository.find(context.pathParam(ID)));
+        String id = context.pathParam(ID);
+        Post post = postRepository.find(id);
+
+        if (post == null) {
+            throw new NotFoundResponse(String.format("A post with id '%s' is not found", id));
+        }
+
+        context.json(post);
     }
 
     @Override
@@ -48,10 +56,10 @@ public class PostControllerImpl implements PostController {
         var id = context.pathParam(ID);
 
         if (post.getId() != null && !post.getId().toString().equals(id)) {
-            throw new BadRequestResponse("Post id update is not allowed");
+            throw new BadRequestResponse("Id update is not allowed");
         }
 
-        postRepository.update(post);
+        postRepository.update(post, id);
     }
 
     @Override
